@@ -138,7 +138,7 @@ table.rk td.n{font-weight:900;width:2.2em}
 .mini{font-size:13px;color:var(--dim);font-weight:700;text-align:center;margin:8px 0 0}
 .clock{font-weight:900;font-size:18px;font-variant-numeric:tabular-nums;min-width:3.2em;text-align:right}
 .clock.low{color:var(--pink)} .clock.over{color:var(--pink);font-size:15px}
-.prog{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin:2px 0 8px}
+.prog{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:2px 0 8px}
 .prog i{height:12px;border:2px solid var(--ink);border-radius:3px;background:#fff}
 .prog i.on{background:var(--mint)} .prog i.cur{background:var(--yel)}
 .badge{display:inline-block;font-size:12px;font-weight:900;border:2px solid var(--ink);border-radius:3px;padding:0 6px;margin-left:6px;background:var(--mint);color:#fff;vertical-align:2px;white-space:nowrap}
@@ -165,7 +165,7 @@ table.rk td.n{font-weight:900;width:2.2em}
         <polygon points="2,92 54,92 36,52" fill="none" stroke="#17171C" stroke-width="2.5" stroke-linejoin="round"/>
       </svg>
       <h1>닮은 <span>삼각형</span></h1>
-      <p>3분 안에 10문제를 맞혀 클리어해요</p>
+      <p>3분 안에 7문제를 맞혀 클리어해요</p>
     </div>
     <div class="menu">
       <button class="mbtn stage" data-stage="1"><span class="ic big1">1<i>단계</i></span><span><b>떨어진 삼각형</b><small id="hs1">네 삼각형 중 닮은 두 삼각형 찾기</small></span></button>
@@ -263,23 +263,24 @@ function finish(cards,type,lv){
 }
 function retry(fn){for(let t=0;t<600;t++){const r=fn();if(r)return r;}throw new Error('문제 생성 실패');}
 
-/* ── 10문제 난이도 ──
-   1~3번 : 회전 없음, 오답은 모양이 확연히 다름
-   4~6번 : 회전, 오답은 모양이 조금 다름
-   7~8번 : 회전+뒤집기, 오답이 아주 비슷함
-   9~10번: 회전+뒤집기, 아주 비슷한 오답 + 같은 모양이지만 정보가 부족한 함정 카드
-   숫자: 닮은 쌍의 비는 언제나 1:2 또는 1:3 (1~5번은 1:2만)
-         각도는 1~5번 10° 단위, 6번부터 5° 단위                              */
-const pairMs=easy=>shuffle(easy?[1,2]:pick([[1,2],[1,3]]));
-const qLevel=n=>n<3?1:n<6?2:n<8?3:4;
+/* ── 7문제 난이도 ──
+   번호   방향            오답 보기                         각도      닮음비
+   1~2번  회전 없음       모양이 확연히 다름                10° 단위  1:2
+   3~4번  회전 없음       모양이 조금 다름                  10° 단위  1:2, 1:3
+   5번    회전            아주 비슷함                       5° 단위   1:2, 1:3
+   6~7번  회전+뒤집기     아주 비슷함 + 정보 부족 함정 카드  5° 단위   1:2, 1:3, 2:3   */
+const qLevel=n=>n<2?1:n<4?2:n<5?3:4;
+function qCfg(n){return {L:qLevel(n),view:n<4?'flat':n<5?'rot':'rotflip',step:n<4?10:5,
+  ratios:n<2?[[1,2]]:n<5?[[1,2],[1,3]]:[[1,2],[1,3],[2,3]]};}
+const pairMs=cfg=>shuffle(pick(cfg.ratios));
 const DIFF={1:[18,90],2:[8,18],3:[2,10],4:[2,10]};
 function angSet(p){return sorted([angAt(p[0],p[1],p[2]),angAt(p[1],p[0],p[2]),angAt(p[2],p[0],p[1])]);}
 function shapeDiff(a,b){const x=angSet(a),y=angSet(b);return Math.max(...x.map((v,i)=>Math.abs(v-y[i])));}
 function okDiff(c,ref,L){const d=shapeDiff(c.pts,ref);return d>=DIFF[L][0]&&d<=DIFF[L][1];}
-function viewFor(L){return L===1?{rot:0,flip:false}:L===2?{rot:Math.random()*Math.PI*2,flip:false}:{rot:Math.random()*Math.PI*2,flip:Math.random()<.5};}
-function finishL(cards,type,L){
-  const r=finish(cards,type,L);if(!r)return null;
-  r.cards.forEach(c=>c.v=viewFor(L));
+function viewFor(v){return v==='flat'?{rot:0,flip:false}:v==='rot'?{rot:Math.random()*Math.PI*2,flip:false}:{rot:Math.random()*Math.PI*2,flip:Math.random()<.5};}
+function finishL(cards,type,cfg){
+  const r=finish(cards,type,cfg.L);if(!r)return null;
+  r.cards.forEach(c=>c.v=viewFor(cfg.view));
   return r;
 }
 function addDistractors(cards,ref,L,make,n){
@@ -290,31 +291,31 @@ function addDistractors(cards,ref,L,make,n){
 /* ── SSS ── */
 const SSS_BASE=[[3,4,6],[2,4,5],[3,5,6],[4,5,6],[3,5,7],[2,3,4],[4,6,7],[3,6,7],[4,5,7],[5,6,8]];
 function validTri(s){const t=sorted(s);return t[0]>0&&t[0]+t[1]>t[2]+0.6;}
-function genSSS(L,easy){return retry(()=>{
-  const base=pick(SSS_BASE),ms=pairMs(easy),perm=s=>L===1?s:shuffle(s);
+function genSSS(cfg){const L=cfg.L;return retry(()=>{
+  const base=pick(SSS_BASE),ms=pairMs(cfg),perm=s=>cfg.view==='flat'?s:shuffle(s);
   const S3=(s,same)=>{const p=perm(s);return card(triSides(p[0],p[1],p[2]),p.slice(),[null,null,null],'S3',p[0]+p[1]+p[2],same);};
   const cards=[S3(base.map(x=>x*ms[0]),1),S3(base.map(x=>x*ms[1]),1)],ref=cards[0].pts;
   const make=L<=2?()=>{const m=pick([1,2]),s=[rnd(2,8),rnd(2,8),rnd(2,8)].map(x=>x*m);return validTri(s)?S3(s):null;}
                  :()=>{const m=pick([1,2,3]),s=base.map(x=>x*m),i=rnd(0,2);s[i]+=pick([-1,1]);return validTri(s)?S3(s):null;};
   if(L===4){const m=pick([1,2,3]),c=S3(base.map(x=>x*m),1);c.sd[rnd(0,2)]=null;c.t='S2';cards.push(c);}
   if(!addDistractors(cards,ref,L,make,4-cards.length))return null;
-  return finishL(cards,'SSS',L);
+  return finishL(cards,'SSS',cfg);
 });}
 
 /* ── SAS ── */
 const B60=[{s:[5,8,7]},{s:[3,8,7]}]; /* 꼭짓점2의 각이 정확히 60°, 끼인각이 아닌 각만 주면 모양이 둘로 갈림 (60°,8,7 → 3 또는 5) */
 const THS=[40,45,50,55,60,65,70,75,80,85,95,100,105,110],THS10=[40,50,60,70,80,100,110];
-function genSAS(L,easy){return retry(()=>{
-  const ms=pairMs(easy),TH=easy?THS10:THS;
+function genSAS(cfg){const L=cfg.L,easy=cfg.step===10;return retry(()=>{
+  const ms=pairMs(cfg),TH=easy?THS10:THS;
   const mk=(p,q,th,same)=>card(triSAS(p,q,th),[null,q,p],[th,null,null],'SAS',p+q,same);
   if(L<4){
     const p=rnd(2,6),q=rnd(2,6);if(p===q)return null;const th=pick(TH);
     const cards=[mk(p*ms[0],q*ms[0],th,1),mk(p*ms[1],q*ms[1],th,1)],ref=cards[0].pts;
     const make=L<=2?()=>{const m=pick([1,2]);return mk(rnd(2,6)*m,rnd(2,6)*m,pick(TH));}
                    :()=>{const m=pick([1,2,3]);if(Math.random()<.5){let a=p*m,b=q*m;if(Math.random()<.5)a+=pick([-1,1]);else b+=pick([-1,1]);return a<2||b<2?null:mk(a,b,th);}
-                          const t2=th+pick([-10,-5,5,10]);return mk(p*m,q*m,t2);};
+                          const t2=th+pick(easy?[-10,10]:[-10,-5,5,10]);return mk(p*m,q*m,t2);};
     if(!addDistractors(cards,ref,L,make,2))return null;
-    return finishL(cards,'SAS',L);
+    return finishL(cards,'SAS',cfg);
   }
   const s=pick(B60).s;
   const mkB=(m,t)=>{const v=s.map(x=>x*m),sd=[null,null,null],an=[null,null,60];
@@ -325,24 +326,24 @@ function genSAS(L,easy){return retry(()=>{
   const cards=[mkB(ms[0],'SAS'),mkB(ms[1],'SAS'),mkB(pick([1,2]),'SSA')];
   if(Math.random()<.4)cards.push(mkB(pick([1,2,3]),'S2'));
   else{const m=pick([1,2]);const c=mk(s[0]*m,s[1]*m+pick([-1,1]),60);if(!okDiff(c,cards[0].pts,4))return null;cards.push(c);}
-  return finishL(cards,'SAS',4);
+  return finishL(cards,'SAS',cfg);
 });}
 
 /* ── AA ── */
 function aaTriple(step){step=step||5;for(;;){const a=rnd(30/step,90/step)*step,b=rnd(30/step,90/step)*step,c=180-a-b;if(c<30||c>110)continue;
   if(Math.abs(a-b)<step||Math.abs(a-c)<step||Math.abs(b-c)<step)continue;return [a,b,c];}}
 const IDX2=[[0,1],[0,2],[1,2]];
-function genAA(L,easy){return retry(()=>{
-  const step=easy?10:5,A=aaTriple(step);
+function genAA(cfg){const L=cfg.L;return retry(()=>{
+  const step=cfg.step,A=aaTriple(step);
   const mk=(T,sh,same)=>{const sc=.75+Math.random()*.6,an=[null,null,null];sh.forEach(i=>an[i]=T[i]);
     return card(triAng(T[0],T[1],T[2]).map(p=>mul(p,sc)),[null,null,null],an,sh.length===2?'A2':'A1',sc,same);};
   const sh1=pick(IDX2);let sh2=sh1;if(L>=3)while(sh2===sh1)sh2=pick(IDX2);
   const cards=[mk(A,sh1,1),mk(A,sh2,1)],ref=cards[0].pts;
   const make=L<=2?()=>mk(aaTriple(step),L===1?sh1:pick(IDX2))
-                 :()=>{const T=A.slice(),i=rnd(0,2),j=(i+rnd(1,2))%3,d=pick([5,10]);T[i]+=d;T[j]-=d;return T.some(x=>x<30)?null:mk(T,pick(IDX2));};
+                 :()=>{const T=A.slice(),i=rnd(0,2),j=(i+rnd(1,2))%3,d=step===10?10:pick([5,10]);T[i]+=d;T[j]-=d;return T.some(x=>x<30)?null:mk(T,pick(IDX2));};
   if(L===4)cards.push(mk(A,[rnd(0,2)],1));
   if(!addDistractors(cards,ref,L,make,4-cards.length))return null;
-  return finishL(cards,'AA',L);
+  return finishL(cards,'AA',cfg);
 });}
 /* ── 설명 ── */
 const INFO={S3:'세 변',S2:'두 변',SAS:'두 변과 끼인각',SSA:'두 변과 끼인각이 아닌 각',A2:'두 각',A1:'한 각'};
@@ -455,9 +456,9 @@ function corrOK(f,base,o){
   for(let i=0;i<3;i++){const a1=angAt(T1[i],T1[(i+1)%3],T1[(i+2)%3]),a2=angAt(T2[i],T2[(i+1)%3],T2[(i+2)%3]);if(Math.abs(a1-a2)>0.3)return false;}
   return true;
 }
-/* 10문제 난이도: 1~3 교과서 방향·다른 삼각형이 섞인 보기 / 4~6 좌우 뒤집기·살짝 회전 / 7~10 크게 회전 + 같은 삼각형의 순서만 바꾼 보기 */
+/* 7문제 난이도: 1~2 교과서 방향·다른 삼각형이 섞인 보기 / 3~4 좌우 뒤집기·살짝 회전 / 5~7 크게 회전 + 같은 삼각형의 순서만 바꾼 보기 */
 function genOV(ti,n){
-  const L=n<3?1:n<6?2:3;
+  const L=n<2?1:n<4?2:3;
   for(let t=0;t<300;t++){
     const f=OV_T[OV_ORDER[ti]]();f.pars=f.pars||[];
     if(!corrOK(f,f.base,f.correct))continue;
@@ -513,7 +514,7 @@ function renderCard(svg,c,sizeF){
   const r=svg.getBoundingClientRect(),W=r.width,H=r.height;if(!W)return;
   svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.innerHTML='';
   const FS=fsFor(W);svg.style.setProperty('--fs',FS+'px');
-  const sp=toScreen(c.pts,c.v),tf=fit(sp,W,H,FS*1.9,sizeF),Q=sp.map(tf),g=S('g',{},svg);
+  const sp=toScreen(c.pts,c.v),tf0=fit(sp,W,H-18,FS*1.9,sizeF),tf=p=>{const q=tf0(p);return P(q.x,q.y+18);},Q=sp.map(tf),g=S('g',{},svg);
   const ctr=P((Q[0].x+Q[1].x+Q[2].x)/3,(Q[0].y+Q[1].y+Q[2].y)/3);
   S('polygon',{points:Q.map(p=>p.x+','+p.y).join(' '),fill:'#FFE27A',stroke:'#17171C','stroke-width':2.5,'stroke-linejoin':'round'},g);
   const tx=c.angs.map(([v,t])=>{const o=[0,1,2].filter(x=>x!==v);return [v,o,t,drawAngle(g,Q[v],Q[o[0]],Q[o[1]],t,FS)];});
@@ -570,7 +571,7 @@ function renderSplit(svg,f){
 }
 
 /* ═════════════ 진행 ═════════════ */
-const GOAL=10, LIMIT_SEC=180;   /* 10문제를 3분 안에 맞히면 클리어 */
+const GOAL=7, LIMIT_SEC=180;   /* 7문제를 3분 안에 맞히면 클리어 */
 const $=id=>document.getElementById(id);
 const st={stage:1,type:null,pb:null,sel:[],locked:false,n:0,wrong:0,t0:0,timer:null,wrongOpt:null,hiCls:null};
 const TYPES={1:['SSS','SAS','AA'],2:[0,1,2,3,4,5,6]};
@@ -594,7 +595,7 @@ function renderHome(){
 function openList(s){
   st.stage=s;
   $('listTitle').textContent=s===1?'1단계 · 떨어진 삼각형':'2단계 · 겹쳐진 삼각형';
-  $('listLead').textContent=s===1?'어떤 닮음을 연습할까요? 3분 안에 10문제를 맞히면 클리어!':'어떤 유형을 연습할까요? 3분 안에 10문제를 맞히면 클리어!';
+  $('listLead').textContent=s===1?'어떤 닮음을 연습할까요? 3분 안에 7문제를 맞히면 클리어!':'어떤 유형을 연습할까요? 3분 안에 7문제를 맞히면 클리어!';
   $('helperBox').innerHTML=allClear(s)?`<div class="helper">🏅 ${s}단계 도우미<small>${s===1?'세 가지':'모든'} 유형을 클리어했어요. 친구들을 도와주세요!</small></div>`:'';
   const C=clears(),colors=['#FFD84D','#FF3E6C','#2F5BFF'];
   $('typeList').innerHTML=TYPES[s].map((t,i)=>{
@@ -625,7 +626,7 @@ function renderProg(){$('prog').innerHTML=Array.from({length:GOAL},(_,i)=>`<i cl
 
 function next(){
   closeSheet();
-  st.pb=st.stage===1?(st.type==='SSS'?genSSS:st.type==='SAS'?genSAS:genAA)(qLevel(st.n),st.n<5):genOV(st.type,st.n);
+  st.pb=st.stage===1?(st.type==='SSS'?genSSS:st.type==='SAS'?genSAS:genAA)(qCfg(st.n)):genOV(st.type,st.n);
   st.sel=[];st.locked=false;st.hiCls=null;
   const pb=st.pb,area=$('stageArea');renderProg();
   if(pb.kind==='sep'){
@@ -706,8 +707,8 @@ function finishRun(){
   const nowAll=allClear(st.stage);
   $('doneTitle').textContent=`${st.stage}단계 · ${typeName(st.stage,st.type)}`;
   $('doneBox').innerHTML=(ok?`<div class="stamp">CLEAR<small>${new Date().toLocaleDateString('ko-KR')}</small></div>`:`<div class="stamp gray">완주<small>시간 초과</small></div>`)+
-    `<p class="doneTime">${fmtT(t)}</p><p class="mid">10문제 정답 · 틀린 횟수 ${st.wrong}번</p>`+
-    (ok?'':`<p class="mid">3분 안에 10문제를 맞히면 클리어예요. 다시 도전해 봐요!</p>`)+
+    `<p class="doneTime">${fmtT(t)}</p><p class="mid">7문제 정답 · 틀린 횟수 ${st.wrong}번</p>`+
+    (ok?'':`<p class="mid">3분 안에 7문제를 맞히면 클리어예요. 다시 도전해 봐요!</p>`)+
     (nowAll&&!wasAll?`<div class="helper">🏅 ${st.stage}단계 도우미가 되었어요!<small>${st.stage===1?'세 가지':'모든'} 유형을 클리어했어요. 선생님께 화면을 보여 드리고 친구들을 도와주세요.</small></div>`:'')+
     `<div class="row2"><button class="ghost" id="dList">목록으로</button><button class="go" id="dAgain" style="padding:13px">다시 도전</button></div>`;
   $('dList').onclick=()=>openList(st.stage);$('dAgain').onclick=()=>start(st.type);
