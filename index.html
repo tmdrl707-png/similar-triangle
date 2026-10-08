@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>닮은 삼각형</title>
+<title>닮은 삼각형 찾기</title>
 <style>
 /* ── 리소 인쇄물 느낌: 크림 종이 + 검은 잉크 + 형광 핑크·블루, 굵은 테두리와 단단한 그림자 ── */
 :root{
@@ -138,7 +138,7 @@ table.rk td.n{font-weight:900;width:2.2em}
 .mini{font-size:13px;color:var(--dim);font-weight:700;text-align:center;margin:8px 0 0}
 .clock{font-weight:900;font-size:18px;font-variant-numeric:tabular-nums;min-width:3.2em;text-align:right}
 .clock.low{color:var(--pink)} .clock.over{color:var(--pink);font-size:15px}
-.prog{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin:2px 0 8px}
+.prog{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:2px 0 8px}
 .prog i{height:12px;border:2px solid var(--ink);border-radius:3px;background:#fff}
 .prog i.on{background:var(--mint)} .prog i.cur{background:var(--yel)}
 .badge{display:inline-block;font-size:12px;font-weight:900;border:2px solid var(--ink);border-radius:3px;padding:0 6px;margin-left:6px;background:var(--mint);color:#fff;vertical-align:2px;white-space:nowrap}
@@ -150,7 +150,6 @@ table.rk td.n{font-weight:900;width:2.2em}
 .stamp.gray{border-color:var(--dim);color:var(--dim)}
 .doneTime{text-align:center;font-size:44px;font-weight:900;margin:0;font-variant-numeric:tabular-nums}
 .cn{font-weight:700;color:var(--pink);font-size:14px;white-space:nowrap}
-body.freeze #app{pointer-events:none}
 #sheet .go:disabled{opacity:1;background:var(--dim);border-color:var(--dim);box-shadow:none}
 #sheet .wrongline{font-size:13.5px;color:var(--dim);margin:2px 0}
 .ansbox{border:2.5px solid var(--mint);border-radius:8px;padding:8px 10px 6px;margin-top:8px;background:#F3FCF8}
@@ -163,6 +162,50 @@ svg.pair{width:100%;height:min(21vh,160px);display:block}
 .sum{margin:6px 0 2px!important;font-size:14.5px!important;text-align:center}
 #sheet.on .in{max-height:80vh}
 #sheet h3{margin-bottom:2px}
+/* 첫 화면 */
+.hero{padding:26px 4px 6px}
+.heroart{width:220px;height:120px;display:block;margin:0 0 6px -4px}
+.heroart .big{transform-origin:10px 112px;animation:grow 1.4s cubic-bezier(.2,.8,.2,1) .2s both}
+.heroart .rays{animation:fade .8s ease .1s both}
+@keyframes grow{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.kicker{font-size:13px!important;font-weight:900;color:var(--pink)!important;letter-spacing:.08em;margin:0 0 4px!important}
+.hero h1{font-size:46px}
+.mbtn.stage{position:relative;align-items:center}
+.st-txt{flex:1;min-width:0}
+.mini{width:58px;height:40px;flex:0 0 auto;opacity:.9}
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.chip{font-style:normal;font-size:11.5px;font-weight:900;border:1.8px solid var(--ink);border-radius:3px;padding:0 6px;background:#fff;color:var(--dim);white-space:nowrap}
+.foot{text-align:center;color:var(--dim);font-size:12px;margin-top:22px}
+/* 등급 색 */
+.g-SSS{background:linear-gradient(135deg,#FFD84D,#FF9F1C)!important;color:#17171C!important}
+.g-SS{background:var(--pink)!important;color:#fff!important}
+.g-S{background:var(--blue)!important;color:#fff!important}
+.g-A{background:var(--mint)!important;color:#fff!important}
+.gbadge{display:inline-block;font-size:12px;font-weight:900;border:2px solid var(--ink);border-radius:3px;padding:0 7px;margin-left:6px;vertical-align:2px}
+/* 완료 화면 등급 도장 */
+.stamp{border:none!important;width:150px;height:150px;color:#fff;box-shadow:0 0 0 5px #fff,0 0 0 8px var(--ink);flex-direction:column;display:flex!important;align-items:center;justify-content:center}
+.stamp b{font-size:56px;line-height:1;letter-spacing:-.04em}
+.stamp small{font-size:11px;margin-top:6px;opacity:.95}
+.stamp.gray{background:var(--soft);color:var(--dim)}
+.tip{color:var(--ink)!important;margin-top:-6px!important}
+.ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:6px 0 10px}
+.ladder .g{border:2px solid var(--ink);border-radius:5px;text-align:center;font-weight:900;font-size:17px;padding:4px 0 3px;opacity:.35}
+.ladder .g.on{opacity:1;transform:translateY(-2px);box-shadow:3px 3px 0 var(--ink)}
+.ladder .g small{display:block;font-size:10px;font-weight:700}
+/* 문제 아래 풀이 */
+#fb{margin-top:2px}
+.fbhead{font-size:14px;color:var(--dim);margin:2px 0 4px}
+.ngtag{display:inline-block;background:var(--pink);color:#fff;font-weight:900;padding:0 7px;border-radius:3px;margin-right:4px}
+#fb .wrongline{font-size:13px;color:var(--dim);margin:2px 0}
+#fb .ansbox{margin-top:6px}
+#fb .anshead em{font-style:normal;font-size:12px;color:var(--dim);font-weight:700;margin-left:4px}
+#fb .whyline{font-size:14.5px;margin:4px 2px}
+#fb svg.split{width:100%;height:120px;display:block;background:#fff;border-radius:6px}
+#fb .go{margin-top:10px}
+#fb .go:disabled{opacity:1;background:var(--dim);border-color:var(--dim);box-shadow:none}
+body.freeze #stageArea,body.freeze #quit{pointer-events:none}
+@media (prefers-reduced-motion:reduce){.heroart .big,.heroart .rays{animation:none}}
 </style>
 </head>
 <body>
@@ -171,20 +214,25 @@ svg.pair{width:100%;height:min(21vh,160px);display:block}
   <!-- 첫 화면 -->
   <section id="home" class="scr on">
     <div class="hero">
-      <svg viewBox="0 0 150 96" aria-hidden="true" style="mix-blend-mode:multiply">
-        <polygon points="6,88 58,88 40,48" fill="#FF3E6C" opacity=".85"/>
-        <polygon points="56,88 144,88 117,22" fill="#2F5BFF" opacity=".8"/>
-        <polygon points="62,92 150,92 123,26" fill="none" stroke="#17171C" stroke-width="2.5" stroke-linejoin="round"/>
-        <polygon points="2,92 54,92 36,52" fill="none" stroke="#17171C" stroke-width="2.5" stroke-linejoin="round"/>
+      <svg viewBox="0 0 220 120" class="heroart" aria-hidden="true">
+        <g class="rays" stroke="#17171C" stroke-width="1.4" stroke-dasharray="3 4" fill="none"><line x1="10" y1="112" x2="120.4" y2="102.4"/><line x1="10" y1="112" x2="82.0" y2="6.4"/><line x1="10" y1="112" x2="163.6" y2="40.0"/></g>
+        <g class="big"><polygon points="120.4,102.4 82.0,6.4 163.6,40.0" fill="#2F5BFF" opacity=".88"/><polygon points="120.4,102.4 82.0,6.4 163.6,40.0" fill="none" stroke="#17171C" stroke-width="2.6" stroke-linejoin="round"/></g>
+        <polygon points="56,108 40,68 74,82" fill="#FF3E6C"/><polygon points="56,108 40,68 74,82" fill="none" stroke="#17171C" stroke-width="2.6" stroke-linejoin="round"/>
+        <circle cx="10" cy="112" r="4" fill="#17171C"/>
+        <text x="182" y="100" font-size="15" font-weight="900" fill="#17171C">×2.4</text>
       </svg>
-      <h1>닮은 <span>삼각형</span></h1>
-      <p>3분 안에 10문제를 맞혀 클리어해요</p>
+      <p class="kicker">중2 · 도형의 닮음</p>
+      <h1>닮은 <span>삼각형</span><br>찾기</h1>
+      <p>3분 안에 7문제를 맞혀 클리어하고<br>SSS 등급에 도전해요</p>
     </div>
     <div class="menu">
-      <button class="mbtn stage" data-stage="1"><span class="ic big1">1<i>단계</i></span><span><b>떨어진 삼각형</b><small id="hs1">네 삼각형 중 닮은 두 삼각형 찾기</small></span></button>
-      <button class="mbtn stage" data-stage="2"><span class="ic big2">2<i>단계</i></span><span><b>겹쳐진 삼각형</b><small id="hs2">한 그림 속에서 닮은 삼각형 찾기</small></span></button>
+      <button class="mbtn stage" data-stage="1"><span class="ic big1">1<i>단계</i></span><span class="st-txt"><b>떨어진 삼각형</b><small>네 삼각형 중 닮은 두 삼각형 찾기</small><span class="chips" id="hs1"></span></span>
+        <svg class="mini" viewBox="0 0 64 44" aria-hidden="true"><polygon points="4,40 20,40 14,26" fill="#FFD84D" stroke="#17171C" stroke-width="2"/><polygon points="28,40 60,40 48,12" fill="#FFD84D" stroke="#17171C" stroke-width="2"/></svg></button>
+      <button class="mbtn stage" data-stage="2"><span class="ic big2">2<i>단계</i></span><span class="st-txt"><b>겹쳐진 삼각형</b><small>한 그림 속에서 닮은 삼각형 찾기</small><span class="chips" id="hs2"></span></span>
+        <svg class="mini" viewBox="0 0 64 44" aria-hidden="true"><polygon points="6,40 58,40 30,4" fill="#FFD84D" stroke="#17171C" stroke-width="2"/><line x1="17" y1="26" x2="45" y2="26" stroke="#17171C" stroke-width="2"/></svg></button>
     </div>
     <div id="helperHome"></div>
+    <p class="foot">기록은 이 휴대폰에만 저장돼요</p>
   </section>
 
   <!-- 유형 고르기 -->
@@ -276,16 +324,24 @@ function finish(cards,type,lv){
 }
 function retry(fn){for(let t=0;t<600;t++){const r=fn();if(r)return r;}throw new Error('문제 생성 실패');}
 
-/* ── 10문제 난이도 (두 문제씩 묶음) ──
-   번호    방향           오답 보기                          각도      닮음비
-   1~2번   회전 없음      모양이 확연히 다름                 10° 단위  1:2
-   3~4번   회전 없음      모양이 조금 다름                   10° 단위  1:2, 1:3
-   5~6번   회전           아주 비슷함                        5° 단위   1:2, 1:3
-   7~8번   회전+뒤집기    아주 비슷함 + 정보 부족 함정 카드   5° 단위   1:2, 1:3, 2:3
-   9~10번  회전+뒤집기    아주 비슷함 + 정보 부족 함정 카드   1° 단위   2:3, 4:5        */
-const qLevel=n=>n<2?1:n<4?2:n<6?3:4;
-function qCfg(n){return {L:qLevel(n),view:n<4?'flat':n<6?'rot':'rotflip',step:n<4?10:n<8?5:1,
-  ratios:n<2?[[1,2]]:n<6?[[1,2],[1,3]]:n<8?[[1,2],[1,3],[2,3]]:[[2,3],[4,5]]};}
+/* ── 7문제 난이도 (한 문제씩 차례로 올라감) ──
+   번호  방향          오답 보기                          각도      닮음비
+   1번   회전 없음     모양이 확연히 다름                 10° 단위  1:2
+   2번   회전 없음     모양이 조금 다름                   10° 단위  1:2, 1:3
+   3번   회전          모양이 조금 다름                   5° 단위   1:2, 1:3
+   4번   회전          아주 비슷함                        5° 단위   1:2, 1:3
+   5번   회전+뒤집기   아주 비슷함                        5° 단위   1:2, 1:3, 2:3
+   6번   회전+뒤집기   아주 비슷함 + 정보 부족 함정 카드   5° 단위   1:3, 2:3
+   7번   회전+뒤집기   아주 비슷함 + 정보 부족 함정 카드   1° 단위   2:3, 4:5        */
+const Q1CFG=[
+  {L:1,view:'flat',   step:10,ratios:[[1,2]]},
+  {L:2,view:'flat',   step:10,ratios:[[1,2],[1,3]]},
+  {L:2,view:'rot',    step:5, ratios:[[1,2],[1,3]]},
+  {L:3,view:'rot',    step:5, ratios:[[1,2],[1,3]]},
+  {L:3,view:'rotflip',step:5, ratios:[[1,2],[1,3],[2,3]]},
+  {L:4,view:'rotflip',step:5, ratios:[[1,3],[2,3]]},
+  {L:4,view:'rotflip',step:1, ratios:[[2,3],[4,5]]}];
+const qCfg=n=>Q1CFG[Math.min(n,Q1CFG.length-1)];
 const pairMs=cfg=>shuffle(pick(cfg.ratios));
 const DIFF={1:[18,90],2:[8,18],3:[2,10],4:[2,10]};
 function angSet(p){return sorted([angAt(p[0],p[1],p[2]),angAt(p[1],p[0],p[2]),angAt(p[2],p[0],p[1])]);}
@@ -512,16 +568,14 @@ const OV_T=[
       why:useB?`<span class="m">∠BAC</span> = <span class="m">∠BDA</span> = 90°, <span class="m">∠B</span>는 공통`:`<span class="m">∠BAC</span> = <span class="m">∠ADC</span> = 90°, <span class="m">∠C</span>는 공통`};
   }
 ];
-/* 2단계 유형 (교과서 대표 유형, 쉬운 것부터) */
-const OV_ORDER=[0,4,1,3,2,5,6];
+/* 2단계 유형 (교과서 대표 유형, 쉬운 것부터) — OV_T의 그림 틀을 묶어서 씀 */
+const OV_GROUPS=[[0,4],[1,3],[2],[5],[6]];
 const OV_INFO=[
-  {name:'평행선이 있는 그림',cond:'AA',sub:'동위각과 공통각',lv:1},
-  {name:'모래시계 모양 · 평행선',cond:'AA',sub:'엇각과 맞꼭지각',lv:1},
-  {name:'공통각 · 엇갈린 각',cond:'AA',sub:'∠ADE = ∠C 일 때',lv:2},
-  {name:'한 변을 공유하는 그림',cond:'AA',sub:'∠ABD = ∠C 일 때',lv:2},
-  {name:'공통각 · 변의 비',cond:'SAS',sub:'AB : AC = AC : AD 일 때',lv:3},
-  {name:'모래시계 모양 · 변의 비',cond:'SAS',sub:'맞꼭지각과 두 변의 비',lv:3},
-  {name:'직각삼각형과 수선',cond:'AA',sub:'직각과 공통각',lv:3}
+  {name:'평행선이 있는 그림',cond:'AA',sub:'동위각·엇각과 공통각·맞꼭지각',lv:1},
+  {name:'공통각과 크기가 같은 각',cond:'AA',sub:'∠ADE = ∠C, ∠ABD = ∠C 꼴',lv:1},
+  {name:'공통각 · 변의 비',cond:'SAS',sub:'공통각을 낀 두 변의 비',lv:2},
+  {name:'모래시계 모양 · 변의 비',cond:'SAS',sub:'맞꼭지각을 낀 두 변의 비',lv:2},
+  {name:'직각삼각형과 수선',cond:'AA',sub:'닮은 직각삼각형이 셋! 직각과 공통각',lv:3}
 ];
 function corrOK(f,base,o){
   const pts=f.pts,tri=s=>[pts[s[0]],pts[s[1]],pts[s[2]]];
@@ -530,11 +584,24 @@ function corrOK(f,base,o){
   for(let i=0;i<3;i++){const a1=angAt(T1[i],T1[(i+1)%3],T1[(i+2)%3]),a2=angAt(T2[i],T2[(i+1)%3],T2[(i+2)%3]);if(Math.abs(a1-a2)>0.3)return false;}
   return true;
 }
-/* 10문제 난이도: 1~4 교과서 방향·다른 삼각형이 섞인 보기 / 5~6 좌우 뒤집기·살짝 회전 / 7~10 크게 회전 + 같은 삼각형의 순서만 바꾼 보기 */
-function genOV(ti,n){
-  const L=n<4?1:n<6?2:3;
+/* 꼭짓점 이름 섞기: 기준 삼각형 세 꼭짓점에 A,B,C를, 나머지 점에 D,E를 무작위로 붙이고
+   문제는 늘 "△ABC와 닮은 삼각형"이 되도록 대응 순서를 다시 맞춤 (해설의 알파벳도 함께 바뀜) */
+function relabel(f){
+  const bt=f.base.split(''),nb=shuffle(['A','B','C']),ex=Object.keys(f.pts).filter(n=>!bt.includes(n)),ne=shuffle(['D','E'].slice(0,ex.length)),m={};
+  bt.forEach((n,i)=>m[n]=nb[i]);ex.forEach((n,i)=>m[n]=ne[i]);
+  const mp=str=>str.split('').map(c=>m[c]||c).join(''),pts={};for(const n in f.pts)pts[m[n]]=f.pts[n];
+  const B=mp(f.base),ord=['A','B','C'].map(L=>B.indexOf(L)),reo=str=>ord.map(i=>str[i]).join('');
+  return Object.assign(f,{pts,segs:f.segs.map(x=>x.map(mp)),angs:f.angs.map(([v,a,b,t])=>[m[v],m[a],m[b],t]),
+    lens:f.lens.map(([a,b,t,w])=>[m[a],m[b],t,m[w]]),rights:f.rights.map(x=>x.map(mp)),pars:(f.pars||[]).map(x=>x.map(mp)),
+    base:'ABC',correct:reo(mp(f.correct)),trap:f.trap?reo(mp(f.trap)):null,others:f.others.map(o=>reo(mp(o))),
+    why:f.why.replace(/[A-Z]/g,c=>m[c]||c)});
+}
+/* 7문제 난이도: 1~2 기본 이름·교과서 방향(좌우 뒤집기만) / 3~4 이름 섞기·회전 / 5~7 이름 섞기·자유 회전 + 같은 삼각형의 순서만 바꾼 보기 */
+function genOV(ti,n,off){
+  const L=n<2?1:n<4?2:3,grp=OV_GROUPS[ti];
   for(let t=0;t<300;t++){
-    const f=OV_T[OV_ORDER[ti]]();f.pars=f.pars||[];
+    let f=OV_T[grp[(n+(off||0))%grp.length]]();f.pars=f.pars||[];
+    if(L>1)f=relabel(f);
     if(!corrOK(f,f.base,f.correct))continue;
     const perm=f.others.length===0||L===3;
     const opts=[f.correct]; if(f.trap)opts.push(f.trap);
@@ -542,7 +609,7 @@ function genOV(ti,n){
     for(const p of shuffle(PERMS)){if(opts.length>=4)break;const o=p.map(i=>f.correct[i]).join('');if(!opts.includes(o))opts.push(o);}
     if(opts.length!==4||opts.filter(o=>corrOK(f,f.base,o)).length!==1)continue;
     f.opts=shuffle(opts);f.ans=f.opts.indexOf(f.correct);
-    f.v=L===1?{flip:false,rot:0}:L===2?{flip:Math.random()<.5,rot:(Math.random()-.5)*0.5}:{flip:Math.random()<.5,rot:(Math.random()-.5)*1.6};
+    f.v=L===1?{flip:Math.random()<.5,rot:0}:L===2?{flip:Math.random()<.5,rot:(Math.random()-.5)*1.4}:{flip:Math.random()<.5,rot:Math.random()*Math.PI*2};
     return {kind:'ov',type:'OV',ti,lv:L,fig:f,conds:[f.cond]};
   }
   throw new Error('그림 생성 실패');
@@ -591,40 +658,79 @@ function renderCard(svg,c,sizeF){
   const sp=toScreen(c.pts,c.v),tf0=fit(sp,W,H-18,FS*1.9,sizeF),tf=p=>{const q=tf0(p);return P(q.x,q.y+18);},Q=sp.map(tf),g=S('g',{},svg);
   const ctr=P((Q[0].x+Q[1].x+Q[2].x)/3,(Q[0].y+Q[1].y+Q[2].y)/3);
   S('polygon',{points:Q.map(p=>p.x+','+p.y).join(' '),fill:'#FFE27A',stroke:'#17171C','stroke-width':2.5,'stroke-linejoin':'round'},g);
-  const tx=c.angs.map(([v,t])=>{const o=[0,1,2].filter(x=>x!==v);return [v,o,t,drawAngle(g,Q[v],Q[o[0]],Q[o[1]],t,FS)];});
-  c.sides.forEach(([i,j,t])=>sideLabel(g,Q[i],Q[j],ctr,String(t),FS));
-  /* 각 글자끼리 겹치면 하나를 바깥으로 */
-  const boxOf=e=>{const b=e.getBBox();return b;},hit=(a,b)=>!(a.x+a.width<b.x||b.x+b.width<a.x||a.y+a.height<b.y||b.y+b.height<a.y);
+  const RK=c.hl?ranks(sideLens(c)).r:null;
+  /* 정답 표시 중이면 나머지 각도 (계산값)으로 함께 보여 줌 */
+  const angList=c.hl&&c.t==='A2'?closeAng(c.an).map((v,i)=>[i,c.an[i]==null?`(${v}°)`:v+'°']):c.angs;
+  if(RK)c.sides.forEach(([i,j])=>{const k=[0,1,2].find(x=>x!==i&&x!==j);S('line',{x1:Q[i].x,y1:Q[i].y,x2:Q[j].x,y2:Q[j].y,stroke:RCOL[RK[k]],'stroke-width':5,'stroke-linecap':'round'},g);});
+  const tx=angList.map(([v,t])=>{const o=[0,1,2].filter(x=>x!==v),e=drawAngle(g,Q[v],Q[o[0]],Q[o[1]],t,FS);
+    if(RK&&e){e.style.fill=RCOL[RK[v]];const pth=e.previousSibling;if(pth)pth.setAttribute('stroke',RCOL[RK[v]]);if(t[0]==='(')e.style.opacity=.7;}
+    return [v,o,t,e];});
+  c.sides.forEach(([i,j,t])=>{sideLabel(g,Q[i],Q[j],ctr,String(t),FS);if(RK){const k=[0,1,2].find(x=>x!==i&&x!==j);g.lastChild.style.fill=RCOL[RK[k]];}});
+  /* 각 글자가 다른 글자와 겹치면 바깥쪽으로 옮김 */
+  const hit=(a,b)=>!(a.x+a.width<b.x||b.x+b.width<a.x||a.y+a.height<b.y||b.y+b.height<a.y);
   const all=[...g.querySelectorAll('text')];
-  tx.forEach(([v,o,t,e],k)=>{if(!e)return;const others=all.filter(x=>x!==e);
-    if(others.some(x=>hit(boxOf(e),boxOf(x)))){
-      g.removeChild(e);const ne=drawAngle(g,Q[v],Q[o[0]],Q[o[1]],null,FS);/* 호는 이미 있음: 글자만 바깥에 */
-      if(ne)g.removeChild(ne);
+  tx.forEach(([v,o,t,e])=>{if(!e)return;
+    if(all.some(x=>x!==e&&hit(e.getBBox(),x.getBBox()))){
       const u=unit(add(unit(sub(Q[o[0]],Q[v])),unit(sub(Q[o[1]],Q[v])))),rr=FS*1.25;
-      S('text',{x:Q[v].x-u.x*rr,y:Q[v].y-u.y*rr,'text-anchor':'middle','dominant-baseline':'central',class:'alab'},g,t);
-      const arcs=g.querySelectorAll('path');arcs[arcs.length-1].remove();}
+      e.setAttribute('x',Q[v].x-u.x*rr);e.setAttribute('y',Q[v].y-u.y*rr);}
   });
 }
+
 function figScreen(f){const names=Object.keys(f.pts),sp=toScreen(names.map(n=>f.pts[n]),f.v),o={};names.forEach((n,i)=>o[n]=sp[i]);return o;}
 function renderFig(svg,f,hi,hiCls){
   const r=svg.getBoundingClientRect(),W=r.width,H=r.height;if(!W)return;
   svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.innerHTML='';
   const FS=W<330?15:16;svg.style.setProperty('--fs',FS+'px');
-  const sc=figScreen(f),tf=fit(Object.values(sc),W,H,FS*2.2),Q={};for(const n in sc)Q[n]=tf(sc[n]);
+  const sc=figScreen(f),tf=fit(Object.values(sc),W,H,FS*2.4),Q={};for(const n in sc)Q[n]=tf(sc[n]);
   const g=S('g',{},svg);
   if(hi){S('polygon',{points:hi.split('').map(n=>Q[n].x+','+Q[n].y).join(' '),fill:hiCls==='bad'?'rgba(255,62,108,.22)':hiCls==='good'?'rgba(0,179,126,.28)':'rgba(47,91,255,.22)',stroke:'none'},g);}
   f.segs.forEach(([a,b])=>S('line',{x1:Q[a].x,y1:Q[a].y,x2:Q[b].x,y2:Q[b].y,stroke:'#17171C','stroke-width':2.6,'stroke-linecap':'round'},g));
   f.rights.forEach(([v,a,b])=>drawRight(g,Q[v],Q[a],Q[b]));
   (f.pars||[]).forEach(([a,b])=>drawPar(g,Q[a],Q[b]));
-  f.angs.forEach(([v,a,b,t])=>drawAngle(g,Q[v],Q[a],Q[b],t,FS));
-  f.lens.forEach(([a,b,t,aw])=>sideLabel(g,Q[a],Q[b],Q[aw],fmt(t),FS));
-  for(const n in Q){ // 꼭짓점 이름: 가장 넓은 빈 방향으로
-    const dirs=[];f.segs.forEach(([a,b])=>{if(a===n)dirs.push(Math.atan2(Q[b].y-Q[n].y,Q[b].x-Q[n].x));if(b===n)dirs.push(Math.atan2(Q[a].y-Q[n].y,Q[a].x-Q[n].x));});
-    dirs.sort((x,y)=>x-y);let best=0,ang=0;
-    for(let i=0;i<dirs.length;i++){const a=dirs[i],b=i+1<dirs.length?dirs[i+1]:dirs[0]+Math.PI*2,gap=b-a;if(gap>best){best=gap;ang=a+gap/2;}}
-    const d=FS*1.15;S('text',{x:Q[n].x+Math.cos(ang)*d,y:Q[n].y+Math.sin(ang)*d,'text-anchor':'middle','dominant-baseline':'central',class:'vlab'},g,n);
+  f.angs.forEach(([v,a,b])=>drawAngle(g,Q[v],Q[a],Q[b],null,FS));
+  /* ── 글자 자리 고르기: 후보 위치 중 다른 글자·선분·표시와 가장 덜 겹치는 곳 ── */
+  const SEG=f.segs.map(([a,b])=>[Q[a],Q[b]]),placed=[],marks=[];
+  f.rights.forEach(([v])=>marks.push({x:Q[v].x-12,y:Q[v].y-12,w:24,h:24}));
+  (f.pars||[]).forEach(([a,b])=>{const m=lerp(Q[a],Q[b],.5);marks.push({x:m.x-13,y:m.y-13,w:26,h:26});});
+  const ov=(a,b)=>!(a.x+a.w<=b.x||b.x+b.w<=a.x||a.y+a.h<=b.y||b.y+b.h<=a.y);
+  const segHit=(A,B,R)=>{const inR=p=>p.x>R.x&&p.x<R.x+R.w&&p.y>R.y&&p.y<R.y+R.h;if(inR(A)||inR(B))return true;
+    const cr=(p,q,r)=>(q.x-p.x)*(r.y-p.y)-(q.y-p.y)*(r.x-p.x),X=(p1,p2,p3,p4)=>cr(p1,p2,p3)*cr(p1,p2,p4)<0&&cr(p3,p4,p1)*cr(p3,p4,p2)<0;
+    const c=[P(R.x,R.y),P(R.x+R.w,R.y),P(R.x+R.w,R.y+R.h),P(R.x,R.y+R.h)];return [0,1,2,3].some(i=>X(A,B,c[i],c[(i+1)%4]));};
+  const boxAt=(c,t,k)=>{const w=t.length*FS*.66*k+6,h=FS*1.22*k;return {x:c.x-w/2,y:c.y-h/2,w,h};};
+  function place(cands,t,cls,k){
+    let best=null,bs=Infinity;
+    cands.forEach((c,i)=>{const b=boxAt(c,t,k*(c.k||1));let sc=i*.02+(c.k?1.5:0);
+      placed.forEach(p=>{if(ov(b,p))sc+=10;});marks.forEach(p=>{if(ov(b,p))sc+=4;});
+      SEG.forEach(([A,B])=>{if(segHit(A,B,{x:b.x+1,y:b.y+1,w:b.w-2,h:b.h-2}))sc+=6;});
+      if(b.x<1||b.y<1||b.x+b.w>W-1||b.y+b.h>H-1)sc+=8;
+      if(sc<bs){bs=sc;best={c,b};}});
+    placed.push(best.b);const at={x:best.c.x,y:best.c.y,'text-anchor':'middle','dominant-baseline':'central',class:cls};
+    if(best.c.k)at.style=`font-size:${Math.round(FS*best.c.k)}px`;S('text',at,g,t);
   }
+  /* 1) 꼭짓점 이름: 빈 방향(넓은 틈) 순서대로 후보 */
+  for(const n in Q){
+    const dirs=[];f.segs.forEach(([a,b])=>{if(a===n)dirs.push(Math.atan2(Q[b].y-Q[n].y,Q[b].x-Q[n].x));if(b===n)dirs.push(Math.atan2(Q[a].y-Q[n].y,Q[a].x-Q[n].x));});
+    dirs.sort((x,y)=>x-y);const gaps=[];
+    for(let i=0;i<dirs.length;i++){const a=dirs[i],b=i+1<dirs.length?dirs[i+1]:dirs[0]+Math.PI*2;gaps.push({g:b-a,m:a+(b-a)/2});}
+    gaps.sort((x,y)=>y.g-x.g);const cands=[];
+    gaps.forEach(G=>[1.15,1.55].forEach(d=>[0,-.35,.35].forEach(o=>{if(Math.abs(o)<G.g/2)cands.push(P(Q[n].x+Math.cos(G.m+o)*FS*d,Q[n].y+Math.sin(G.m+o)*FS*d));})));
+    place(cands,n,'vlab',1.15);
+  }
+  /* 2) 각도 */
+  f.angs.forEach(([v,a,b,t])=>{const V=Q[v],A=Q[a],B=Q[b],la=Math.min(dist(V,A),dist(V,B)),r0=Math.max(12,Math.min(20,la*.3)),deg=angAt(V,A,B);
+    const u=unit(add(unit(sub(A,V)),unit(sub(B,V)))),cands=[];
+    [r0+FS*(deg<50?1.25:.95),r0+FS*1.6,r0+FS*2.3,r0+FS*3.1,r0+FS*4].forEach(d=>[0,-.12,.12].forEach(o=>{const c=Math.cos(o),s2=Math.sin(o),w=P(u.x*c-u.y*s2,u.x*s2+u.y*c);cands.push(P(V.x+w.x*d,V.y+w.y*d));}));
+    cands.push(P(V.x-u.x*FS*1.3,V.y-u.y*FS*1.3));
+    /* 좁은 각: 글자를 조금 작게 쓴 후보 */
+    [r0+FS*1.0,r0+FS*1.5,r0+FS*2.1,r0+FS*2.8].forEach(d=>{const c=P(V.x+u.x*d,V.y+u.y*d);c.k=.8;cands.push(c);});
+    place(cands,t,'alab',1);});
+  /* 3) 길이: 선분 양쪽, 가운데·조금 비낀 자리 */
+  f.lens.forEach(([a,b,t,aw])=>{const A=Q[a],B=Q[b];let n=unit(P(-(B.y-A.y),B.x-A.x));const m=lerp(A,B,.5);
+    if((m.x-Q[aw].x)*n.x+(m.y-Q[aw].y)*n.y<0)n=mul(n,-1);const cands=[];
+    [1,-1].forEach(sg=>[.5,.38,.62,.28,.72].forEach(tt=>[.95,1.35].forEach(d=>{const p=lerp(A,B,tt);cands.push(P(p.x+n.x*sg*FS*d,p.y+n.y*sg*FS*d));})));
+    place(cands,fmt(t),'lab',1);});
 }
+
 /* 떼어 보기: 기준 삼각형과 정답 삼각형을 같은 방향으로 나란히 */
 function renderSplit(svg,f){
   const r=svg.getBoundingClientRect(),W=r.width,H=r.height;if(!W)return;
@@ -645,15 +751,23 @@ function renderSplit(svg,f){
 }
 
 /* ═════════════ 진행 ═════════════ */
-const GOAL=10, LIMIT_SEC=180, READ_LOCK=5;   /* 틀리면 5초 동안 풀이만 볼 수 있음 */
-const _unused=0;   /* 10문제를 3분 안에 맞히면 클리어 */
+const GOAL=7, LIMIT_SEC=180, READ_LOCK=7;   /* 틀리면 7초 동안 풀이만 볼 수 있음 */
+/* 클리어 등급 (초): 이 시간 안에 7문제를 다 맞히면 그 등급, 3분 안이면 A
+   1단계: 문제당 SSS 약 6초 · SS 약 10초 · S 약 15초 (정답 뒤 넘어가는 시간 포함)
+   2단계: 보기 4개 중 고르기라 조금 더 빠르게 잡음
+   한 번 틀리면 풀이 7초 + 문제 하나가 더 붙어 약 20초 늘어나므로, SS 이상은 사실상 실수 없이 풀어야 나옴 */
+const GRADE={1:[['SSS',45],['SS',70],['S',105]],2:[['SSS',40],['SS',62],['S',95]]};
+const gradeOf=(stage,t)=>{if(t>LIMIT_SEC)return null;for(const [g,lim] of GRADE[stage])if(t<=lim)return g;return 'A';};
+const G_ORDER=['A','S','SS','SSS'];
+const _unused=0;   /* 7문제를 3분 안에 맞히면 클리어 */
 const $=id=>document.getElementById(id);
 const st={stage:1,type:null,pb:null,sel:[],locked:false,n:0,wrong:0,t0:0,timer:null,wrongOpt:null,hiCls:null};
-const TYPES={1:['SSS','SAS','AA'],2:[0,1,2,3,4,5,6]};
+const TYPES={1:['SSS','SAS','AA'],2:[0,1,2,3,4]};
 const typeName=(s,t)=>s===1?`${t} 닮음`:OV_INFO[t].name;
 const CK='simTri_clear_v1';
 const clears=()=>LS.get(CK,{});
-const isClear=(s,t)=>!!clears()[`${s}-${t}`];
+const ckey=(s,t)=>s===2?`2b-${t}`:`${s}-${t}`;   /* 2단계는 유형이 바뀌어 새 기록으로 */
+const isClear=(s,t)=>!!clears()[ckey(s,t)];
 const allClear=s=>TYPES[s].every(t=>isClear(s,t));
 
 function show(id){document.querySelectorAll('.scr').forEach(x=>x.classList.toggle('on',x.id===id));closeSheet();window.scrollTo(0,0);}
@@ -662,19 +776,21 @@ document.querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>openList(+b.d
 const fmtT=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
 
 function renderHome(){
-  [1,2].forEach(s=>{const k=TYPES[s].filter(t=>isClear(s,t)).length;
-    $('hs'+s).innerHTML=(s===1?'네 삼각형 중 닮은 두 삼각형 찾기':'한 그림 속에서 닮은 삼각형 찾기')+`<br><span class="btime">클리어 ${k} / ${TYPES[s].length}</span>`;});
+  const C=clears();
+  [1,2].forEach(s=>{
+    $('hs'+s).innerHTML=TYPES[s].map(t=>{const r=C[ckey(s,t)],g=r?gradeOf(s,r.best):null,nm=s===1?t:String(t+1);
+      return `<i class="chip ${g?'g-'+g:''}">${nm}${g?' ★'+g:''}</i>`;}).join('');});
   const h=[1,2].filter(allClear);
   $('helperHome').innerHTML=h.length?`<div class="helper">🏅 ${h.map(s=>s+'단계').join(' · ')} 도우미<small>모든 유형을 클리어했어요. 친구들을 도와주세요!</small></div>`:'';
 }
 function openList(s){
   st.stage=s;
   $('listTitle').textContent=s===1?'1단계 · 떨어진 삼각형':'2단계 · 겹쳐진 삼각형';
-  $('listLead').textContent=s===1?'어떤 닮음을 연습할까요? 3분 안에 10문제를 맞히면 클리어!':'어떤 유형을 연습할까요? 3분 안에 10문제를 맞히면 클리어!';
+  $('listLead').textContent=s===1?'어떤 닮음을 연습할까요? 3분 안에 7문제를 맞히면 클리어!':'어떤 유형을 연습할까요? 3분 안에 7문제를 맞히면 클리어!';
   $('helperBox').innerHTML=allClear(s)?`<div class="helper">🏅 ${s}단계 도우미<small>${s===1?'세 가지':'모든'} 유형을 클리어했어요. 친구들을 도와주세요!</small></div>`:'';
   const C=clears(),colors=['#FFD84D','#FF3E6C','#2F5BFF'];
   $('typeList').innerHTML=TYPES[s].map((t,i)=>{
-    const rec=C[`${s}-${t}`],badge=rec?`<span class="badge">CLEAR</span>`:'';
+    const rec=C[ckey(s,t)],gb=rec?gradeOf(s,rec.best):null,badge=gb?`<span class="gbadge g-${gb}">★${gb}</span>`:'';
     const best=rec?` · <span class="btime">최고 ${fmtT(rec.best)}</span>`:'';
     if(s===1){const sub={SSS:'세 쌍의 대응변의 길이의 비',SAS:'두 쌍의 변의 비와 끼인각',AA:'두 쌍의 대응각'}[t];
       return `<button class="mbtn" data-t="${t}"><span class="ic" style="background:${colors[i]};${i?'color:#fff':''}">${t}</span><span><b>${t} 닮음${badge}</b><small>${sub}${best}</small></span></button>`;}
@@ -688,7 +804,7 @@ $('quit').onclick=()=>{stopTimer();openList(st.stage);};
 $('doneBack').onclick=()=>openList(st.stage);
 
 function start(type){
-  Object.assign(st,{type,n:0,wrong:0,locked:false,t0:Date.now()});
+  Object.assign(st,{type,n:0,wrong:0,locked:false,t0:Date.now(),off:rnd(0,1)});
   $('modeName').textContent=typeName(st.stage,type);
   show('play');startTimer();next();
 }
@@ -701,7 +817,7 @@ function renderProg(){$('prog').innerHTML=Array.from({length:GOAL},(_,i)=>`<i cl
 
 function next(){
   closeSheet();
-  st.pb=st.stage===1?(st.type==='SSS'?genSSS:st.type==='SAS'?genSAS:genAA)(qCfg(st.n)):genOV(st.type,st.n);
+  st.pb=st.stage===1?(st.type==='SSS'?genSSS:st.type==='SAS'?genSAS:genAA)(qCfg(st.n)):genOV(st.type,st.n,st.off);
   st.sel=[];st.locked=false;st.hiCls=null;
   const pb=st.pb,area=$('stageArea');renderProg();
   if(pb.kind==='sep'){
@@ -723,8 +839,7 @@ function draw(){
   if(pb.kind==='sep'){const mx=Math.max(...pb.cards.map(c=>c.size));
     document.querySelectorAll('#stageArea .card svg').forEach((s,i)=>renderCard(s,pb.cards[i],.72+.28*pb.cards[i].size/mx));}
   else{const f=pb.fig,i=st.sel[0];renderFig($('fig'),f,i!=null?f.opts[i]:null,st.hiCls);}
-  const sp=document.querySelector('#sheet svg.split');if(sp&&pb.kind==='ov')renderSplit(sp,pb.fig);
-  const pp=document.querySelector('#sheet svg.pair');if(pp&&pb.kind==='sep')renderPair(pp,pb);
+  const sp=document.querySelector('#fb svg.split');if(sp&&pb.kind==='ov')renderSplit(sp,pb.fig);
 }
 let rT=null;window.addEventListener('resize',()=>{clearTimeout(rT);rT=setTimeout(draw,120);});
 
@@ -756,44 +871,49 @@ function judge(){
 }
 function feedback(picked){
   const pb=st.pb;let h='';
-  const condName=pb.conds.join(' 또는 ')+' 닮음';
   if(pb.kind==='sep'){
     const [a,b]=pb.pair,[x,y]=picked.slice().sort(),PR=pairRows(pb);
-    h+=`<h3 class="ng">아쉬워요</h3><p class="wrongline">고른 (${TAGS[x]})·(${TAGS[y]}): ${shortWhy(pb,x,y)}</p>`;
+    pb.cards[a].hl=pb.cards[b].hl=true;   /* 문제 카드 위에 대응 색 표시 */
+    h+=`<div class="fbhead"><span class="ngtag">아쉬워요</span> 고른 (${TAGS[x]})·(${TAGS[y]}): ${shortWhy(pb,x,y)}</div>`;
     const tricks=[x,y].filter(i=>pb.cards[i].same&&!pb.pair.includes(i));
     if(tricks.length)h+=`<p class="wrongline">💡 (${tricks.map(i=>TAGS[i]).join('), (')})는 사실 같은 모양이지만, 주어진 정보로는 닮음이라고 말할 수 없어요.</p>`;
-    h+=`<div class="ansbox"><p class="anshead">정답 <b>(${TAGS[a]})와 (${TAGS[b]})</b> · <span>${pb.conds.join(' 또는 ')} 닮음</span></p>
-      <svg class="pair"></svg><div class="rows">${PR.rows}</div><p class="sum">${PR.sum}</p></div>`;
+    h+=`<div class="ansbox"><p class="anshead">정답 <b>(${TAGS[a]})와 (${TAGS[b]})</b> · <span>${pb.conds.join(' 또는 ')} 닮음</span> <em>같은 색끼리 대응해요</em></p>
+      <div class="rows">${PR.rows}</div><p class="sum">${PR.sum}</p></div>`;
   }else{
     const f=pb.fig,w=st.wrongOpt,same=vset(w)===vset(f.correct);
-    h+=`<h3 class="ng">아쉬워요</h3><p>△${w}${same?'는 삼각형은 맞지만 <b>꼭짓점의 대응 순서</b>가 달라요.':'는 △'+f.base+'와 닮은 삼각형이 아니에요.'}</p>`;
-    h+=`<div class="ln">${f.why}<br>→ △${f.base} ∽ △${f.correct} <b>(${f.cond} 닮음)</b></div>`;
-    h+=`<p class="small" style="margin-bottom:0">두 삼각형을 떼어서 같은 방향으로 놓으면</p><svg class="split"></svg>`;
-    h+=`<p class="small" style="margin-top:0">같은 색 점끼리 대응해요: ${f.base.split('').map((n,i)=>`${n}↔${f.correct[i]}`).join(', ')}</p>`;
+    h+=`<div class="fbhead"><span class="ngtag">아쉬워요</span> △${w}${same?'는 삼각형은 맞지만 <b>대응 순서</b>가 달라요.':'는 △'+f.base+'와 닮은 삼각형이 아니에요.'}</div>`;
+    h+=`<div class="ansbox"><p class="anshead">정답 <b>△${f.correct}</b> · <span>${f.cond} 닮음</span></p>
+      <p class="whyline">${f.why}<br>→ △${f.base} ∽ △${f.correct}</p>
+      <svg class="split"></svg><p class="sum">같은 색 점끼리 대응: ${f.base.split('').map((n,i)=>`${n}↔${f.correct[i]}`).join(', ')}</p></div>`;
   }
   h+=`<button class="go" id="nextBtn" disabled>풀이를 읽어요… ${READ_LOCK}</button>`;
-  $('sheetIn').innerHTML=h;$('sheet').classList.add('on');
-  /* 풀이를 읽도록 READ_LOCK초 동안 화면을 누를 수 없음 (풀이 스크롤은 가능) */
+  const fb=document.createElement('div');fb.id='fb';fb.innerHTML=h;
+  $('actions').innerHTML='';$('actions').appendChild(fb);
+  /* 풀이를 읽도록 READ_LOCK초 동안 문제를 누를 수 없음 (스크롤은 가능) */
   document.body.classList.add('freeze');
   let left=READ_LOCK;const btn=$('nextBtn');
   const cd=setInterval(()=>{left--;
     if(left>0){btn.textContent=`풀이를 읽어요… ${left}`;return;}
-    clearInterval(cd);document.body.classList.remove('freeze');btn.disabled=false;btn.textContent='다시 도전 (새 문제)';},1000);
+    clearInterval(cd);st.readTimer=null;document.body.classList.remove('freeze');btn.disabled=false;btn.textContent='다시 도전 (새 문제)';},1000);
   st.readTimer=cd;
   btn.onclick=()=>{if(!btn.disabled)next();};
-  $('app').style.paddingBottom=Math.min(innerHeight*.62,$('sheetIn').offsetHeight+20)+'px';
-  requestAnimationFrame(draw);
+  requestAnimationFrame(()=>{draw();fb.scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});});
 }
 function finishRun(){
-  stopTimer();const t=elapsed(),ok=t<=LIMIT_SEC,key=`${st.stage}-${st.type}`;
-  const C=clears(),wasAll=allClear(st.stage);
-  if(ok){C[key]={best:Math.min(t,C[key]?C[key].best:Infinity),at:Date.now()};LS.set(CK,C);}
-  const nowAll=allClear(st.stage);
+  stopTimer();const t=elapsed(),gr=gradeOf(st.stage,t),key=ckey(st.stage,st.type);
+  const C=clears(),wasAll=allClear(st.stage),prev=C[key];
+  if(gr){C[key]={best:Math.min(t,prev?prev.best:Infinity),at:Date.now()};LS.set(CK,C);}
+  const nowAll=allClear(st.stage),bestG=C[key]?gradeOf(st.stage,C[key].best):null;
+  /* 다음 등급까지 남은 시간 */
+  let nextTip='';if(gr&&gr!=='SSS'){const lad=GRADE[st.stage].slice().reverse();const nx=lad.find(([g,lim])=>G_ORDER.indexOf(g)>G_ORDER.indexOf(gr));
+    if(nx)nextTip=`<p class="mid tip">${nx[0]}까지 <b>${Math.ceil(t-nx[1])}초</b> 더 빠르게!</p>`;}
+  const lad=`<div class="ladder">${[...GRADE[st.stage],['A',LIMIT_SEC]].map(([g,lim])=>`<span class="g g-${g}${g===gr?' on':''}">${g}<small>${fmtT(lim)} 이내</small></span>`).join('')}</div>`;
   $('doneTitle').textContent=`${st.stage}단계 · ${typeName(st.stage,st.type)}`;
-  $('doneBox').innerHTML=(ok?`<div class="stamp">CLEAR<small>${new Date().toLocaleDateString('ko-KR')}</small></div>`:`<div class="stamp gray">완주<small>시간 초과</small></div>`)+
-    `<p class="doneTime">${fmtT(t)}</p><p class="mid">10문제 정답 · 틀린 횟수 ${st.wrong}번</p>`+
-    (ok?'':`<p class="mid">3분 안에 10문제를 맞히면 클리어예요. 다시 도전해 봐요!</p>`)+
-    (nowAll&&!wasAll?`<div class="helper">🏅 ${st.stage}단계 도우미가 되었어요!<small>${st.stage===1?'세 가지':'모든'} 유형을 클리어했어요. 선생님께 화면을 보여 드리고 친구들을 도와주세요.</small></div>`:'')+
+  $('doneBox').innerHTML=(gr?`<div class="stamp g-${gr}"><b>${gr}</b><small>CLEAR · ${new Date().toLocaleDateString('ko-KR')}</small></div>`:`<div class="stamp gray"><b style="font-size:30px">완주</b><small>시간 초과</small></div>`)+
+    `<p class="doneTime">${fmtT(t)}</p><p class="mid">7문제 정답 · 틀린 횟수 ${st.wrong}번</p>`+nextTip+lad+
+    (gr?'':`<p class="mid">3분 안에 7문제를 맞히면 클리어예요. 다시 도전해 봐요!</p>`)+
+    (prev&&bestG?`<p class="mid small">이 유형 최고 기록 ${fmtT(C[key].best)} (${bestG})</p>`:'')+
+    (nowAll&&!wasAll?`<div class="helper">🏅 ${st.stage}단계 도우미가 되었어요!<small>모든 유형을 클리어했어요. 선생님께 화면을 보여 드리고 친구들을 도와주세요.</small></div>`:'')+
     `<div class="row2"><button class="ghost" id="dList">목록으로</button><button class="go" id="dAgain" style="padding:13px">다시 도전</button></div>`;
   $('dList').onclick=()=>openList(st.stage);$('dAgain').onclick=()=>start(st.type);
   show('done');
